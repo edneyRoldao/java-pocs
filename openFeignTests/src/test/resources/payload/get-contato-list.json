@@ -1,0 +1,20 @@
+[
+  {
+    "id": 1,
+    "nome": "Edney",
+    "tipo": "celular",
+    "valor": "121545"
+  },
+  {
+    "id": 2,
+    "nome": "Marjorie",
+    "tipo": "email",
+    "valor": "marj@mail.com"
+  },
+  {
+    "id": 3,
+    "nome": "Nadine",
+    "tipo": "telefone",
+    "valor": "78454545"
+  }
+]
