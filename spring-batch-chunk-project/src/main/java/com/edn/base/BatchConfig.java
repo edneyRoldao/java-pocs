@@ -3,7 +3,6 @@ package com.edn.base;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
-import org.springframework.batch.core.StepListener;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
@@ -13,26 +12,29 @@ import org.springframework.batch.item.ItemWriter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.task.SimpleAsyncTaskExecutor;
-import org.springframework.core.task.TaskExecutor;
-import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 @Slf4j
-@EnableAsync
 @Configuration
 @EnableScheduling
 @EnableBatchProcessing
 public class BatchConfig {
+
+    private static final int CHUNKS = 3;
+
+    /*
+        - Object is the same to each Job (ItemReader, ItemProcessor, ItemWriter, JobListener)
+        - there is no logical sequence between BeforeStep, de sequence below will not work:
+            - Reader (AfterStep) -> Processor (BeforeStep)
+            - DOT NOT SHARE OBJECT INSTANCES AMONG STEPPERS using ExecutionContext, use JobListener instead
+    */
+
 
     @Autowired
     private JobBuilderFactory jobs;
 
     @Autowired
     private StepBuilderFactory steps;
-
-    @Autowired
-    private StepListener stepListener;
 
     @Autowired
     private JobListener jobListener;
@@ -57,20 +59,11 @@ public class BatchConfig {
 
     @Bean
     protected Step processLines(ItemReader<Line> r, ItemProcessor<Line, Line> p, ItemWriter<Line> w) {
-        return steps.get("processLines").<Line, Line>chunk(0)
+        return steps.get("processLines").<Line, Line>chunk(CHUNKS)
                 .reader(r)
                 .processor(p)
                 .writer(w)
-                .taskExecutor(asyncTaskExecutor())
-                .listener(stepListener)
                 .build();
-    }
-
-    @Bean
-    public TaskExecutor asyncTaskExecutor() {
-        SimpleAsyncTaskExecutor taskExecutor = new SimpleAsyncTaskExecutor("linesProcessorTaskExecutor");
-        taskExecutor.setConcurrencyLimit(8);
-        return taskExecutor;
     }
 
 }

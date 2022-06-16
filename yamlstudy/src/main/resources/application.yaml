@@ -12,3 +12,11 @@ teste:
       - bananinha
       - joao_das_couves
       - my_lord
+    fourth-list:
+      - 0.75
+      - 1.50
+      - 2.00
+    fifth-list:
+      - -5000
+      - -5008
+      - -5010

@@ -16,6 +16,8 @@ public class ConfigProperties {
     private List<String> firstList;
     private List<String> secondList;
     private List<String> thirdList;
+    private List<Float> fourthList;
+    private List<Integer> fifthList;
 
 }
 

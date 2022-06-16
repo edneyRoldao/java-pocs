@@ -1,5 +1,6 @@
 package com.edn.base;
 
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.listener.JobExecutionListenerSupport;
@@ -10,18 +11,27 @@ import org.springframework.stereotype.Component;
 public class JobListener extends JobExecutionListenerSupport {
 
     @Override
+    @SneakyThrows
     public void beforeJob(JobExecution jobExecution) {
+        log.info("@@@@@@@@@@ JOB LISTENER (before) @@@@@@@@@@@");
         log.info("Starting job ID={} NAME={}.", jobExecution.getJobId(), jobExecution.getJobInstance().getJobName());
+
+        jobExecution.getExecutionContext().put("test", "just a test:" + jobExecution.getJobId());
+        Thread.sleep(1000);
+        jobExecution.getExecutionContext().put("test2", "just a second test:" + jobExecution.getJobId());
+
+
+        System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
+        System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
+        System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
+        System.out.println(this);
+        System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
+        System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
+        System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
     }
 
     @Override
     public void afterJob(JobExecution jobExecution) {
-        log.info("Finishing job ID={} NAME={}. The job took {} second(s) to complete.",
-                jobExecution.getJobId(),
-                jobExecution.getJobInstance().getJobName(),
-                (jobExecution.getEndTime().getTime() - jobExecution.getStartTime().getTime())/1000
-        );
-
-        log.info("Finishing job ID={} NAME={}.", jobExecution.getJobId(), jobExecution.getJobInstance().getJobName());
     }
+
 }

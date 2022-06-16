@@ -18,6 +18,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 @Configuration
 public class BatchExecutionConfig {
 
+    private static int counter = 0;
+
     @Autowired
     private Job job;
 
@@ -28,14 +30,19 @@ public class BatchExecutionConfig {
     @Setter
     private AtomicBoolean enableJobExecution = new AtomicBoolean(true);
 
-    @Scheduled(fixedRate = 600000)
+    @Scheduled(fixedRate = 10_000, initialDelay = 10_000)
     public void launchJobScheduler() throws Exception {
-        if (enableJobExecution.get()) {
-            Date startDate = new Date();
+        log.info("@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+        log.info("INICIO PROCESSO: {}", counter);
+
+        if (counter++ < 8) {
             JobExecution execution = jobLauncher.run(job, new JobParametersBuilder()
-                    .addDate("launch date",  startDate)
+                    .addDate("launch date",  new Date())
                     .toJobParameters());
         }
+
+        System.out.println();
+        System.out.println();
     }
 
 }

@@ -37,4 +37,16 @@ public class TesteYalm {
         return properties.getThirdList();
     }
 
+    @GetMapping("f4")
+    public List<Float> getYalmList4() {
+        log.error("there was an error");
+        return properties.getFourthList();
+    }
+
+    @GetMapping("f5")
+    public List<Integer> getYalmList5() {
+        log.error("there was an error");
+        return properties.getFifthList();
+    }
+
 }
